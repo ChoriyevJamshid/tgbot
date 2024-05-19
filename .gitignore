@@ -1,0 +1,13 @@
+venv
+json_data
+parsing/json_data
+db.sqlite3
+database.db
+__pycache__/
+.idea
+.env
+INFO
+
+
+
+
