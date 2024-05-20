@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 #     await asyncio.gather(*tasks)
 
 
-def run_parer():
+def run_parser():
     logger.info("run_parer()() function is called")
 
     alifshop_parser = alifshop.parser.Parser(
@@ -173,4 +173,4 @@ def run_parer():
 
 
 if __name__ == "__main__":
-    run_parer()
+    run_parser()

@@ -3,8 +3,8 @@ import logging
 import time
 import os
 from celery import shared_task
-from djapp.models import Product, Shop, ProductType
-from parsing.manage import run_parer
+from djapp.models import Product, Shop, ProductType, DataDict
+from parsing.manage import run_parser
 
 logger = logging.getLogger(__name__)
 
@@ -19,9 +19,8 @@ def task_1():
 @shared_task
 def get_parsing_data():
     logger.info("Parser is working!")
-    # run_parer()
+    # run_parser()
     list_dirs = os.listdir('json_data')
-    list_dirs.remove("kwargs.json")
     logger.info(f"Files: {list_dirs}")
     time.sleep(5)
 
@@ -30,12 +29,20 @@ def get_parsing_data():
     for file_name in list_dirs:
         data = None
         dir_name = file_name.split('.')[0]
+
         try:
             logger.info(f"File name: {file_name}")
             with open(f'json_data/{file_name}', mode='r') as file:
                 data = json.load(file)
         except Exception as e:
             logger.info(f"\nError = {e}\n")
+
+        if file_name == 'kwargs.json':
+            DataDict.objects.all().delete()
+            DataDict.objects.create(
+                json_data=data
+            )
+            continue
 
         if data is None:
             print('\ndata is None\n')
