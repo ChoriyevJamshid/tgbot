@@ -16,8 +16,8 @@ from middlewares.middleware import SessionMiddleware
 
 load_dotenv()
 
-bot = Bot(token=os.getenv('TOKEN'), parse_mode=ParseMode.HTML)
-
+bot = Bot(token=os.environ.get('TOKEN'), parse_mode=ParseMode.HTML)
+print(os.environ.get('TOKEN'))
 dp = Dispatcher()
 dp.include_router(users_private_router)
 
