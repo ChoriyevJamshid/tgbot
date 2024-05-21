@@ -114,6 +114,7 @@ class AsyncParser:
         self.subcategory = subcategory
         self.dirname = args[0]
         self.category_type = args[1]
+        self.exp_number = 0
 
         self.URL = f'https://uzum.uz'
         self.HEADERS = {
