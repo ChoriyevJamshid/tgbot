@@ -10,11 +10,11 @@ django.setup()
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 from handlers.users_private import users_private_router
 from middlewares.middleware import SessionMiddleware
 
-load_dotenv(find_dotenv())
+load_dotenv()
 
 bot = Bot(token=os.getenv('TOKEN'), parse_mode=ParseMode.HTML)
 
