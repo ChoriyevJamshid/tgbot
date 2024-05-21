@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+    server:
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: Dockerfile
+        entrypoint: /app/docker/backend/server-entrypoint.sh
+        expose:
+            - 8000
+        environment:
+            DEBUG: "True"
+            CELERY_BROKER_URL: "redis://redis:6379/0"
+            CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+            DJANGO_DB: postgresql
+            POSTGRES_HOST: db
+            POSTGRES_NAME: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_PORT: 5432
+    worker:
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: Dockerfile
+        entrypoint: /app/docker/backend/worker-entrypoint.sh
+
+        environment:
+            DEBUG: "True"
+            CELERY_BROKER_URL: "redis://redis:6379/0"
+            CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+            DJANGO_DB: postgresql
+            POSTGRES_HOST: db
+            POSTGRES_NAME: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_PORT: 5432
+        depends_on:
+            - server
+            - redis
+    beat:
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: Dockerfile
+        entrypoint: /app/docker/backend/beat-entrypoint.sh
+
+        environment:
+            DEBUG: "True"
+            CELERY_BROKER_URL: "redis://redis:6379/0"
+            CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+            DJANGO_DB: postgresql
+            POSTGRES_HOST: db
+            POSTGRES_NAME: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_PORT: 5432
+        depends_on:
+            - server
+            - redis
+    redis:
+        restart: unless-stopped
+        image: redis:latest
+        expose:
+            - 6379
+    db:
+        image: postgres:15.0-alpine
+        restart: unless-stopped
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+        expose:
+            - 5432
+volumes:
+    postgres_data: {}

@@ -35,7 +35,7 @@ ru = {
 
 en = {
     "start": {
-        "message": "Hello.\nSelect one of the following options."
+        "message": "Welcome.\nSelect one of the following options."
     },
     "choose_language": {
         "message": "Select one of the buttons below."

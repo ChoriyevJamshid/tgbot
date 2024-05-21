@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
 from celery.schedules import crontab
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv('.env'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,10 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t-53qx4*$j5zj$6b#%s!cv-g-380s72^xck@q*^yp8e5)ha!yk'
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", 'django-insecure-t-53qx4*$j5zj$6b#%s!cv-g-380s72^xck@q*^yp8e5)ha!yk'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", True)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -62,11 +67,27 @@ WSGI_APPLICATION = 'djconfig.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DB_SQLITE = 'sqlite'
+DB_POSTGRESQL = 'postgresql'
+
+DB_ALL = {
+    DB_SQLITE: {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    },
+    DB_POSTGRESQL: {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": os.environ.get("POSTGRES_HOST", 'localhost'),
+        "NAME": os.environ.get('POSTGRES_NAME', 'postgres'),
+        "USER": os.environ.get("POSTGRES_USER", 'postgres'),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", 'postgres'),
+        "PORT": os.environ.get("POSTGRES_PORT", '5432')
     }
+}
+DATABASES = {
+    "default": DB_ALL[os.environ.get("DJANGO_DB", default=DB_SQLITE)]
 }
 
 # Password validation
@@ -98,7 +119,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-CELERY_BROKER_URL = "redis://localhost:6379/"
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL",
+                                   default="redis://localhost:6379/")
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_backend
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_TIMEZONE = TIME_ZONE
@@ -114,10 +136,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BEAT_SCHEDULE = {
-    # 'add-every-30-seconds': {
-    #     'task': 'djapp.tasks.task_1',
-    #     'schedule': 15.0,
-    # },
     'add-every-day': {
         'task': 'djapp.tasks.get_parsing_data',
         'schedule': crontab(day_of_week="*/1", hour="0", minute="0")

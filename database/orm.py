@@ -33,7 +33,7 @@ def get_product_from_db(values: list) -> list:
         product = shop.products.filter(price=min_price).first()
         if product:
             price = float(product.price)
-            print(f"shop: {shop.title}, len: {len(shop.products.all())}, min_price: {min_price}")
+            # print(f"shop: {shop.title}, len: {len(shop.products.all())}, min_price: {min_price}")
             products.append(
                 {
                     'shop': shop.title,
