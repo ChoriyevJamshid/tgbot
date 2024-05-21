@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from celery.schedules import crontab
 from dotenv import load_dotenv, find_dotenv
+import dj_database_url
 
 load_dotenv(find_dotenv('.env'))
 
@@ -86,8 +87,12 @@ DB_ALL = {
         "PORT": os.environ.get("POSTGRES_PORT", '5432')
     }
 }
+# DATABASES = {
+#     "default": DB_ALL[os.environ.get("DJANGO_DB", default=DB_SQLITE)]
+# }
+
 DATABASES = {
-    "default": DB_ALL[os.environ.get("DJANGO_DB", default=DB_SQLITE)]
+    "default": dj_database_url.config(conn_max_age=600, default='sqlite:///db.sqlite3')
 }
 
 # Password validation
