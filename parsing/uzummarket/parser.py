@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 options = Options()
 options.add_argument('--no-sandbox')
-# options.add_argument("--headless")
+options.add_argument("--headless")
 options.add_argument('--disable-dev-shm-usage')
 debug = False
 
@@ -158,11 +158,11 @@ class AsyncParser:
 
         browser = webdriver.Chrome(options=options)
         browser.get(self.URL + f"/{self.category}/{self.subcategory}")
-        time.sleep(10)
+        time.sleep(15)
         html = browser.page_source
 
         soup = BeautifulSoup(html, 'html.parser')
-        # print(soup)
+        print(soup)
         return soup
 
     async def get_json_data(self):

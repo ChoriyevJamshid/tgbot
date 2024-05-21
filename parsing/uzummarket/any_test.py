@@ -11,7 +11,7 @@ url = f'https://uzum.uz'
 
 browser = webdriver.Chrome(options=options)
 browser.get(url)
-time.sleep(10)
+time.sleep(15)
 en = time.perf_counter()
 print(f"Time: {round(en - st, 3)}")
 print("ALL WORKS OK!!!")
