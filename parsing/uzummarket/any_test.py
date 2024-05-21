@@ -3,7 +3,7 @@ from selenium import webdriver
 
 options = Options()
 options.add_argument('--no-sandbox')
-options.add_argument("--headless")
+# options.add_argument("--headless")
 options.add_argument('--disable-dev-shm-usage')
 import time
 st = time.perf_counter()

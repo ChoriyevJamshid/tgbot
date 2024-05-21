@@ -1,6 +1,10 @@
 from parsing.base.parser import *
 from selenium import webdriver
-
+from selenium.webdriver.chrome.options import Options
+options = Options()
+options.add_argument('--no-sandbox')
+# options.add_argument("--headless")
+options.add_argument('--disable-dev-shm-usage')
 debug = False
 
 categories = {
@@ -152,7 +156,7 @@ class AsyncParser:
         if page is not None:
             url += f"?page={page}"
 
-        browser = webdriver.Chrome()
+        browser = webdriver.Chrome(options=options)
         browser.get(self.URL + f"/{self.category}/{self.subcategory}")
         time.sleep(10)
         html = browser.page_source
@@ -287,7 +291,7 @@ if __name__ == '__main__' and not debug:
     while True:
         print('Start parsing!...')
         try:
-            asyncio.run(parser.get_page_data(1))
+            asyncio.run(parser.run())
             break
         except Exception as e:
 
