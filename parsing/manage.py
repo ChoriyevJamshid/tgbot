@@ -8,7 +8,7 @@ from parsing import mediapark
 from parsing import olcha
 from parsing import sello
 from parsing import texnomart
-from parsing import uzummarket
+# from parsing import uzummarket
 from parsing.base.parser import sync_recursion_dict_extend_dict
 
 logger = logging.getLogger(__name__)
@@ -58,11 +58,11 @@ def run_parser():
         *("texnomart", 'smartphone')
     )
 
-    uzum_parser = uzummarket.parser.AsyncParser(
-        uzummarket.parser.categories['smartphone']['category'],
-        uzummarket.parser.categories['smartphone']['subcategory'],
-        *("uzummarket", 'smartphone')
-    )
+    # uzum_parser = uzummarket.parser.AsyncParser(
+    #     uzummarket.parser.categories['smartphone']['category'],
+    #     uzummarket.parser.categories['smartphone']['subcategory'],
+    #     *("uzummarket", 'smartphone')
+    # )
 
     # tasks = (
     #     alifshop_parser.run(),
@@ -154,16 +154,16 @@ def run_parser():
             texnomart_parser.exp_number += 1
             print(exc)
 
-    while True:
-        try:
-            asyncio.run(uzum_parser.run())
-            break
-        except Exception as exc:
-            print(uzum_parser.__class__.__name__)
-            print(exc)
-            if uzum_parser.exp_number > 3:
-                break
-            uzum_parser.exp_number += 1
+    # while True:
+    #     try:
+    #         asyncio.run(uzum_parser.run())
+    #         break
+    #     except Exception as exc:
+    #         print(uzum_parser.__class__.__name__)
+    #         print(exc)
+    #         if uzum_parser.exp_number > 3:
+    #             break
+    #         uzum_parser.exp_number += 1
     kwargs = dict()
     for parser in parser_list:
         sync_recursion_dict_extend_dict(kwargs, parser.kwargs)
