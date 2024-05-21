@@ -6,17 +6,18 @@ from .tasks import task_1, get_parsing_data
 
 
 def index(request):
-
-    task_1.delay()
+    if request.user.is_superuser:
+        task_1.delay()
 
     return HttpResponse("Hello world!")
 
 
 def parser(request):
+    if request.user.is_superuser:
+        get_parsing_data.delay()
 
-    get_parsing_data.delay()
-
-    return HttpResponse("Parsing is already finished")
+        return HttpResponse("Parsing is already finished")
+    return HttpResponse("You have not a permission")
 
 
 def product_stats(request):
@@ -38,9 +39,9 @@ def product_stats(request):
     texnomart_products_count = Product.objects.filter(shop__id=6).aggregate(
         count=Count('id')
     )
-    uzummarket_products_count = Product.objects.filter(shop__id=7).aggregate(
-        count=Count('id')
-    )
+    # uzummarket_products_count = Product.objects.filter(shop__id=7).aggregate(
+    #     count=Count('id')
+    # )
 
     return HttpResponse(
         f"""
@@ -50,15 +51,16 @@ media_park: {media_park_products_count['count']}<br>
 olcha: {olcha_products_count['count']}<br>
 sello: {sello_products_count['count']}<br>
 texnomart: {texnomart_products_count['count']}<br>
-uzummarket: {uzummarket_products_count['count']}<br>
 """
     )
 
 def delete_products(request):
-    Product.objects.all().delete()
+    if request.user.is_superuser:
+        Product.objects.all().delete()
 
-    return HttpResponse(
-        'All products have deleted!'
-    )
+        return HttpResponse(
+            'All products have deleted!'
+        )
+    return HttpResponse("You have not a permission")
 
 
