@@ -60,7 +60,7 @@ class User(BaseModel):
     first_name = models.CharField(max_length=255, blank=True, null=True)
     username = models.CharField(max_length=255, blank=True, null=True)
 
-    language = models.CharField(max_length=5, default='uz')
+    language = models.CharField(max_length=5, default='')
     current_text = models.CharField(max_length=255, default='')
     current_values = models.JSONField(default={})
 

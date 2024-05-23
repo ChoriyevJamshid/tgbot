@@ -1,7 +1,7 @@
 from asgiref.sync import sync_to_async
 from aiogram import Bot, types, Router, F
 from aiogram.filters import CommandStart, Command
-from keyboards.inline import get_keyboard, json_data, language_keyboard
+from keyboards.inline import get_keyboard, json_data, language_keyboard, generate_keyboard
 from database.orm import data_dict
 from database import orm
 from langs.functions import save_to_database
@@ -18,40 +18,57 @@ async def command_start(message: types.Message, session, bot: Bot):
     first_name = message.chat.first_name
     username = message.chat.username
 
-    user = orm.get_or_create_user(session, chat_id, first_name, username)
-    language = user.language
-    text = f"{texts_data[str(language)]['start']['message']}"
-    if not language:
+    user, created = orm.get_or_create_user(session, chat_id, first_name, username)
+    language = user.language if user.language else 'uz'
+    text = texts_data[str(language)]
+
+    if created:
+        text = text['choose_language']['message']
         return await message.answer(
             text,
             reply_markup=language_keyboard()
         )
-    return await message.answer(text, reply_markup=get_keyboard([]))
+
+    return await get_start_text(message, user, bot)
 
 
 @users_private_router.message(Command('lang'))
 async def change_language(message: types.Message, session, bot: Bot):
     chat_id = message.chat.id
-    message_id = message.message_id - 1
-    user = orm.get_or_create_user(session, chat_id)
+    message_id = message.message_id
+    user, created = orm.get_or_create_user(session, chat_id)
     language = user.language
 
     text = f"<b>{texts_data[language]['change_language']['message']}</b>"
     try:
+        await bot.delete_message(chat_id, message_id)
         await bot.edit_message_text(
             text=text, chat_id=chat_id,
-            message_id=message_id,
+            message_id=message_id - 1,
             reply_markup=language_keyboard()
         )
-        await bot.delete_message(chat_id, message_id)
     except Exception:
         await message.answer(text, reply_markup=language_keyboard())
+
+
+@users_private_router.callback_query(F.data.startswith('other_'))
+async def other_callbacks(callback: types.CallbackQuery, session, bot: Bot):
+    chat_id = callback.message.chat.id
+    user, created = orm.get_or_create_user(session, chat_id)
+    language = user.language
+
+    _, data = callback.data.split('_')
+
+    if data == "search":
+        text = f"<b>{texts_data[language]['choose']['message']}</b>"
+        await callback.message.edit_text(text, reply_markup=get_keyboard([]))
+    await callback.answer()
 
 
 @users_private_router.callback_query(F.data.startswith('lang_'))
 async def choose_language(callback: types.CallbackQuery, session, bot: Bot):
     chat_id = callback.message.chat.id
-    user = orm.get_or_create_user(session, chat_id)
+    user, created = orm.get_or_create_user(session, chat_id)
 
     _, language = callback.data.split('_')
 
@@ -66,9 +83,12 @@ async def choose_language(callback: types.CallbackQuery, session, bot: Bot):
 
 @users_private_router.callback_query(F.data.startswith('value_'))
 async def choose_product(callback: types.CallbackQuery, session, bot: Bot):
+    is_back = False
+    removed = None
     chat_id = callback.message.chat.id
 
-    user = orm.get_or_create_user(session, chat_id)
+    user, created = orm.get_or_create_user(session, chat_id)
+    language = user.language
 
     if user.current_values.get('values') is None:
         user.current_values['values'] = list()
@@ -76,7 +96,14 @@ async def choose_product(callback: types.CallbackQuery, session, bot: Bot):
     values: list = user.current_values['values']
     _, value = callback.data.split('_')
 
-    values.append(value)
+    if value == "back":
+        if not values:
+            return await get_start_text(callback.message, user, bot)
+        else:
+            removed = values.pop()
+            is_back = True
+    else:
+        values.append(value)
 
     button_texts = json_data
     for value in values:
@@ -85,22 +112,50 @@ async def choose_product(callback: types.CallbackQuery, session, bot: Bot):
         else:
             button_texts = {}
 
-    user.current_text += value.title() + " "
+    if not is_back:
+        user.current_text += value.title() + " "
+    else:
+        user.current_text = user.current_text.replace(removed.title() + " ", "")
     user.current_values['values'] = values
 
-    text = f"<b><i>{user.current_text}</i></b>"
+    if not user.current_text:
+        sizes = (2,)
+        text = f"<b>{texts_data[language]['choose']['message']}</b>"
+    else:
+        sizes = (4,)
+        text = f"<b><i>{user.current_text}</i></b>"
 
     if len(tuple(button_texts.keys())) == 0:
         await callback.answer()
         return await return_data(callback.message, session, bot)
 
-    await callback.message.edit_text(text, reply_markup=get_keyboard(values, sizes=(4,)))
+    await callback.message.edit_text(text, reply_markup=get_keyboard(values, sizes=sizes))
     await callback.answer()
+
+
+async def get_start_text(message, user, bot):
+    language = user.language
+
+    get_start_text_dict = texts_data[language]['start']
+    text = ""
+    text += f"🤖 <b>{get_start_text_dict['message']['line1']}</b>"
+    text += f"\n<b><i>{get_start_text_dict['message']['line2']}</i></b>\n"
+    text += f"<i>{get_start_text_dict['message']['line3']}</i>"
+    text += f"<i>{get_start_text_dict['message']['line4']}</i>"
+    text += f"<i>{get_start_text_dict['message']['line5']}</i>"
+    await bot.delete_message(user.chat_id, message.message_id)
+    return message.answer(text, reply_markup=generate_keyboard(
+        {
+            get_start_text_dict['button']['text']: "search"
+        },
+        sizes=(1,),
+        value="other"
+    ))
 
 
 async def return_data(message: types.Message, session, bot: Bot):
     chat_id = message.chat.id
-    user = orm.get_or_create_user(session, chat_id)
+    user, created = orm.get_or_create_user(session, chat_id)
 
     language = user.language
     current_values = user.current_values['values']
@@ -142,127 +197,13 @@ async def return_data(message: types.Message, session, bot: Bot):
     else:
         txt = texts_data[language]['return_data']['message3']
         text = f"<h2>{txt}</h2>"
-    return await message.answer(text)
 
-# version1
+    get_start_text_dict = texts_data[language]['start']
+    return message.answer(text, reply_markup=generate_keyboard(
+        {
+            get_start_text_dict['button']['text']: "search"
+        },
+        sizes=(1,),
+        value="other"
+    ))
 
-# @users_private_router.message(CommandStart())
-# async def command_start(message: types.Message):
-#     chat_id = message.chat.id
-#
-#     if users_data.get(str(chat_id), None) is None:
-#         users_data[str(chat_id)] = dict()
-#     user_data = users_data[str(chat_id)]
-#
-#     if user_data.get('language', None) is None:
-#         user_data['language'] = 'uz'
-#
-#     text = texts_data[user_data['language']]['start']['message']
-#     save_users_data(users_data, chat_id, user_data)
-#
-#     return await message.answer(
-#         text,
-#         reply_markup=language_keyboard()
-#     )
-#
-#
-# @users_private_router.callback_query(F.data.startswith('value_'))
-# async def choose_product(callback: types.CallbackQuery):
-#
-#     print(f'\n{callback.data}\n')
-#     chat_id = callback.message.chat.id
-#
-#     user_data = users_data[str(chat_id)]
-#
-#     if user_data.get('current_values') is None:
-#         user_data['current_values'] = list()
-#
-#     current_values = user_data['current_values']
-#
-#     _, value = callback.data.split('_')
-#     current_values.append(value)
-#
-#     button_texts = json_data
-#     for value in current_values:
-#         if button_texts.get(value):
-#             button_texts = button_texts[value]
-#         else:
-#             button_texts = {}
-#     if user_data.get('current_text', None) is None:
-#         user_data['current_text'] = ''
-#     text = user_data['current_text']
-#     text += f"{value.title()} "
-#
-#     user_data['current_text'] = text
-#     user_data['current_values'] = current_values
-#     save_users_data(users_data, chat_id, user_data)
-#
-#     if len(tuple(button_texts.keys())) == 0:
-#         await callback.answer()
-#         return await return_data(callback.message)
-#
-#     await callback.message.edit_text(text, reply_markup=get_keyboard(current_values, sizes=(4,)))
-#     await callback.answer()
-#
-# @users_private_router.callback_query(F.data.startswith('lang_'))
-# async def choose_language(callback: types.CallbackQuery):
-#
-#     chat_id = callback.message.chat.id
-#     user_data = users_data[str(chat_id)]
-#
-#     _, language = callback.data.split('_')
-#
-#     user_data['language'] = language
-#     users_data[str(chat_id)] = user_data
-#     save_users_data(users_data, chat_id, user_data)
-#
-#     text = texts_data[user_data['language']]['choose_language']['message']
-#
-#     await callback.message.edit_text(text, reply_markup=get_keyboard([]))
-#     await callback.answer()
-#
-#
-# async def return_data(message: types.Message):
-#     chat_id = message.chat.id
-#     user_data = users_data[str(chat_id)]
-#     current_values = user_data['current_values']
-#     current_text = user_data['current_text']
-#
-#     if user_data.get('history') is None:
-#         user_data['history'] = dict()
-#         user_data['history']['texts'] = list()
-#         user_data['history']['values'] = list()
-#     user_data['history']['texts'].append(current_text)
-#     user_data['history']['values'].append(current_values)
-#
-#     user_data['current_text'] = ''
-#     user_data['current_values'] = []
-#     save_users_data(users_data, chat_id, user_data)
-#
-#     products = await sync_to_async(get_product_from_db)(current_values)
-#     product_data = None
-#     for data in products:
-#         if product_data is None:
-#             product_data = data
-#         else:
-#             if product_data['price'] > data['price']:
-#                 product_data = data
-#
-#     txt = texts_data[user_data['language']]['return_data']['message']
-#     text = f"{txt} {current_text}"
-#     await message.edit_text(text)
-#
-#     for data in products:
-#         text = f"""
-# Shop: {data['shop']}
-# Product: {data['product'].title.title()}
-# Price: {data['price']}
-# Link: {data['product'].link}
-# """
-#         await message.answer(text)
-#     txt = texts_data[user_data['language']]['return_data']['message2']
-#     text = f'''
-# {txt}: {current_text.title()}
-# {product_data['product'].link}
-#     '''
-#     return await message.answer(text)

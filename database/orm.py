@@ -130,7 +130,7 @@ def save_users_data(users_data, chat_id, user_data):
 
 
 def get_or_create_user(session, chat_id, first_name='', username=''):
-
+    created = False
     if session.get(str(chat_id), None) is None:
         user, created = User.objects.get_or_create(chat_id=chat_id)
         if created:
@@ -140,7 +140,7 @@ def get_or_create_user(session, chat_id, first_name='', username=''):
         session[str(chat_id)] = user
     user = session[str(chat_id)]
 
-    return user
+    return user, created
 
 
 def save_user_history(user, text, values):

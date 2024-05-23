@@ -10,15 +10,6 @@ json_data = data_dict.json_data
 
 def generate_keyboard(button_texts, sizes, value="value"):
     keyboard = InlineKeyboardBuilder()
-    # print(button_texts)
-    # if isinstance(button_texts, list):
-    #     for text in button_texts:
-    #         keyboard.add(
-    #             InlineKeyboardButton(
-    #                 text=f"{str(text).title()}",
-    #                 callback_data=f"{value}_{str(text).lower()}")
-    #         )
-    # else:
     for text, cdata in button_texts.items():
         keyboard.add(
             InlineKeyboardButton(
@@ -27,7 +18,17 @@ def generate_keyboard(button_texts, sizes, value="value"):
             )
         )
 
-    return keyboard.adjust(*sizes).as_markup()
+    keyboard = keyboard.adjust(*sizes)
+    if value == "value":
+        back_keyboard = InlineKeyboardBuilder()
+        back_keyboard.add(
+            InlineKeyboardButton(
+                text="🔙",
+                callback_data="value_back"
+            )
+        )
+        keyboard.attach(back_keyboard)
+    return keyboard.as_markup()
 
 
 def get_keyboard(values: list, sizes=(2,)):
