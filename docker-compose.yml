@@ -11,6 +11,7 @@ services:
             - POSTGRES_NAME=dtb_db
             - POSTGRES_USER=dtb_user
             - POSTGRES_PASSWORD=dtb_user
+            - POSTGRES_HOST=db
             - POSTGRES_PORT=5432
         env_file:
             - ./.env
