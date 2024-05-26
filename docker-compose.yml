@@ -8,9 +8,9 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         environment:
-            - POSTGRES_DB=dtb_db
-            - POSTGRES_USER=dtb_user
-            - POSTGRES_PASSWORD=dtb_user
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
         env_file:
             - ./.env
         ports:
@@ -35,9 +35,9 @@ services:
             - ./.env
         environment:
             - DJANGO_SETTINGS_MODULE=djconfig.settings.prod
-            - POSTGRES_DB=dtb_db
-            - POSTGRES_USER=dtb_user
-            - POSTGRES_PASSWORD=dtb_user
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
         depends_on:
             - db
     bot:
