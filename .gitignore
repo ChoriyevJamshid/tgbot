@@ -1,16 +1,15 @@
 venv
 json_data
 parsing/json_data
-db_1.sqlite3
+old_db/db_1.sqlite3
 database.db
 __pycache__/
 .idea
 .env
 INFO
-.sqlite3
-
+db.sqlite3
 celerybeat-schedule
-
+old_db
 
 
 
