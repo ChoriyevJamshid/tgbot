@@ -8,9 +8,9 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_DB=postgres
+            - POSTGRES_DB=dtb_db
+            - POSTGRES_USER=dtb_user
+            - POSTGRES_PASSWORD=dtb_password
         env_file:
             - ./.env
         ports:
@@ -31,6 +31,7 @@ services:
             - "8005:8005"
         environment:
             - DJANGO_SETTINGS_MODULE=djconfig.settings.prod
+            - DATABASE_URL: postgres://dtb_user:dtb_password@db:5432/dtb_db
         expose:
             - "8005"
         env_file:
