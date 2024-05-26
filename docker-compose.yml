@@ -29,15 +29,15 @@ services:
             - .:/code
         ports:
             - "8005:8005"
-        environment:
-            - DJANGO_SETTINGS_MODULE=djconfig.settings.prod
-            - DATABASE_URL: postgres://dtb_user:dtb_password@db:5432/dtb_db
         expose:
             - "8005"
         env_file:
             - ./.env
         depends_on:
             - db
+        environment:
+            - DJANGO_SETTINGS_MODULE=djconfig.settings.prod
+            - DATABASE_URL: postgres://dtb_user:dtb_password@db:5432/dtb_db
     bot:
         build:
             context: .
