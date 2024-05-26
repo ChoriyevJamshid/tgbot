@@ -2,15 +2,14 @@ version: "3.8"
 
 services:
     db:
-        image: postgres:15
+        image: postgres:latest
         container_name: dtb_postgres
         restart: always
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         environment:
-            - POSTGRES_NAME=dtb_db
-            - POSTGRES_USER=dtb_user
-            - POSTGRES_PASSWORD=dtb_user
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
         env_file:
             - ./.env
         ports:
