@@ -3,7 +3,7 @@ import time
 
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djconfig.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djconfig.settings.locale')
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 django.setup()
 
@@ -12,6 +12,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 from handlers.users_private import users_private_router
+from handlers.admin import admin_router
 from middlewares.middleware import SessionMiddleware
 from common.bot_command_list import bot_cmds
 
@@ -19,6 +20,7 @@ load_dotenv()
 
 bot = Bot(token=os.environ.get('TOKEN'), parse_mode=ParseMode.HTML)
 dp = Dispatcher()
+dp.include_router(admin_router)
 dp.include_router(users_private_router)
 
 
@@ -39,6 +41,6 @@ if __name__ == '__main__':
     # while True:
     #     try:
     asyncio.run(main())
-        # except Exception as e:
-        #     print(f"Exception: {e}")
-        #     time.sleep(15)
+    # except Exception as e:
+    #     print(f"Exception: {e}")
+    #     time.sleep(15)

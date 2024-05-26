@@ -8,7 +8,7 @@ from database.orm import data_dict
 json_data = data_dict.json_data
 
 
-def generate_keyboard(button_texts, sizes, value="value"):
+def generate_keyboard(button_texts, sizes, value="value", **kwargs):
     keyboard = InlineKeyboardBuilder()
     for text, cdata in button_texts.items():
         keyboard.add(
@@ -28,6 +28,19 @@ def generate_keyboard(button_texts, sizes, value="value"):
             )
         )
         keyboard.attach(back_keyboard)
+
+    if kwargs:
+        pagination_builder = InlineKeyboardBuilder()
+        for key, __value in kwargs.items():
+            pagination_builder.add(
+                InlineKeyboardButton(
+                    text=key,
+                    callback_data=f"{value}_{__value}"
+                )
+            )
+        pagination_builder.adjust(len(kwargs.keys(),))
+        keyboard.attach(pagination_builder)
+
     return keyboard.as_markup()
 
 
@@ -50,5 +63,7 @@ def language_keyboard():
         '🏴󠁧󠁢󠁥󠁮󠁧󠁿 English': 'en'
     }
     return generate_keyboard(button_texts, (1,), 'lang')
+
+
 
 

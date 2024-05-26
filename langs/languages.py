@@ -17,12 +17,18 @@ uz = {
         "message": {
             "line1": "Assalomu alaykum, bu smartfonlarni tavsiya qiluvchi bot.",
             "line2": "\nBot sizga 6 ta internet magazindan, ya'ni:",
-            "line3": "\nAlifshop, Bemarket, Mediapark, Olcha, Sello, Textnomart.",
+            "line3": "\nAlifshop, Bemarket, Mediapark, Olcha, Sello, Texnomart.",
             "line4": "\nSizning so'rovingiz bo'yicha smartfon qiririb",
             "line5": "\nsizga eng arzonini tafsiya qiladi!"
         },
         "button": {
             "text": "Qidiruv"
+        }
+    },
+    "admin": {
+        "message": {
+            "number": "Foydalanuvchilar soni",
+            "list": "Foydalanuvchilar ro'yxati"
         }
     }
 }
@@ -46,13 +52,20 @@ ru = {
         "message": {
             "line1": "Привет, это бот, который рекомендует смартфоны.",
             "line2": "\nБот дает вам 6 интернет-магазинов, а именно:",
-            "line3": "\nAlifshop, Bemarket, Mediapark, Olcha, Sello, Textnomart.",
+            "line3": "\nAlifshop, Bemarket, Mediapark, Olcha, Sello, Texnomart.",
             "line4": "\nПо вашему запросу смартфон поскребет и ",
             "line5": "\nпорекомендует вам самый дешевый!"
         },
         "button": {
             "text": "Поиск"
         }
+    },
+    "admin": {
+        "message": {
+            "number": "Количество пользователей",
+            "list": "Список пользователей"
+        },
+
     }
 
 }
@@ -76,12 +89,18 @@ en = {
         "message": {
             "line1": "Hello, this is a bot that recommends smartphones.",
             "line2": "\nBot gives you 6 internet stores, namely:",
-            "line3": "\nAlifshop, Bemarket, Mediapark, Olcha, Sello, Textnomart.",
+            "line3": "\nAlifshop, Bemarket, Mediapark, Olcha, Sello, Texnomart.",
             "line4": "\nYour request will interpret the most affordable to you",
             "line5": "\nby scraping a dirty smartphone!"
         },
         "button": {
             "text": "Search"
+        }
+    },
+    "admin": {
+        "message": {
+            "number": "Number of users",
+            "list": "List of users"
         }
     }
 }

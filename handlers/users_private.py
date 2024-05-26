@@ -1,3 +1,5 @@
+import random
+
 from asgiref.sync import sync_to_async
 from aiogram import Bot, types, Router, F
 from aiogram.filters import CommandStart, Command
@@ -206,4 +208,7 @@ async def return_data(message: types.Message, session, bot: Bot):
         sizes=(1,),
         value="other"
     ))
+
+
+
 
