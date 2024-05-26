@@ -8,9 +8,10 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         environment:
-            - POSTGRES_DB=postgres
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=dtb_db
+            - POSTGRES_USER=dtb_user
+            - POSTGRES_PASSWORD=dtb_user
+            - POSTGRES_PORT=5432
         env_file:
             - ./.env
         ports:
