@@ -8,10 +8,9 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         environment:
-            - POSTGRES_DB=postgres
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_PORT=5432
+            - POSTGRES_NAME=dtb_db
+            - POSTGRES_USER=dtb_user
+            - POSTGRES_PASSWORD=dtb_user
         env_file:
             - ./.env
         ports:
@@ -36,10 +35,6 @@ services:
             - ./.env
         environment:
             - DJANGO_SETTINGS_MODULE=djconfig.settings.prod
-            - POSTGRES_DB=postgres
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_PORT=5432
         depends_on:
             - db
     bot:
