@@ -37,7 +37,6 @@ services:
             - db
         environment:
             - DJANGO_SETTINGS_MODULE=djconfig.settings.prod
-            - DATABASE_URL=postgres://dtb_user:dtb_password@db:5432/dtb_db
     bot:
         build:
             context: .

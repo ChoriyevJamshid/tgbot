@@ -99,9 +99,9 @@ DB_ALL = {
 #     "default": DB_ALL[os.environ.get("DJANGO_DB", default=DB_SQLITE)]
 # }
 
-DATABASES = {
-    "default": dj_database_url.config(conn_max_age=600, default='sqlite:///db.sqlite3')
-}
+# DATABASES = {
+#     "default": dj_database_url.config(conn_max_age=600, default='sqlite:///db.sqlite3')
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
