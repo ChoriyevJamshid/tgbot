@@ -34,6 +34,10 @@ def get_parsing_data():
             logger.info(f"File name: {file_name}")
             with open(f'json_data/{file_name}', mode='r') as file:
                 data = json.load(file)
+                logger.info("\n\n")
+                logger.info(data)
+                logger.info("\n\n")
+
         except Exception as e:
             logger.info(f"\nError = {e}\n")
 
@@ -60,9 +64,7 @@ def get_parsing_data():
             title='smartphone'
         )
 
-        if 'bemarket' in file_name:
-            logger.info(f"\n\n{file_name}\n\n")
-
+        logger.info("\nSaving models\n")
         for page_number, page_data in data.items():
             # logger.info(f"Page number: {page_number}")
             for i, product in page_data.items():
