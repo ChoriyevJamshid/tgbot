@@ -23,7 +23,7 @@ services:
             dockerfile: Dockerfile
         container_name: dtb_django
         restart: always
-        command: bash -c "python manage.py migrate --settings=djconfig.settings.prod && gunicorn djconfig.wsgi:application -w 4 -b 0.0.0.0:8005"
+        command: bash -c "python manage.py migrate && gunicorn djconfig.wsgi:application -w 4 -b 0.0.0.0:8005"
         volumes:
             - .:/code
         ports:

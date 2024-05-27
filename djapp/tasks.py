@@ -40,7 +40,9 @@ def get_parsing_data():
         if file_name == 'kwargs.json':
             DataDict.objects.all().delete()
             DataDict.objects.create(
-                json_data=data
+                json_data=data,
+                users_data=dict(),
+                texts_data=dict(),
             )
             continue
 

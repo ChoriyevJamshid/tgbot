@@ -45,9 +45,9 @@ class Product(BaseModel):
 
 
 class DataDict(BaseModel):
-    json_data = models.JSONField(default={})
-    users_data = models.JSONField(default={})
-    texts_data = models.JSONField(default={})
+    json_data = models.JSONField(blank=True)
+    users_data = models.JSONField(blank=True)
+    texts_data = models.JSONField(blank=True)
     objects = models.Manager()
 
     def __str__(self):
@@ -60,9 +60,9 @@ class User(BaseModel):
     first_name = models.CharField(max_length=255, blank=True, null=True)
     username = models.CharField(max_length=255, blank=True, null=True)
 
-    language = models.CharField(max_length=5, default='')
+    language = models.CharField(max_length=5, default='uz')
     current_text = models.CharField(max_length=255, default='')
-    current_values = models.JSONField(default={})
+    current_values = models.JSONField(blank=True, null=True)
 
     is_admin = models.BooleanField(default=False)
     objects = models.Manager()
@@ -74,8 +74,8 @@ class User(BaseModel):
 class UserHistory(BaseModel):
     user = models.ForeignKey('User', on_delete=models.CASCADE,
                              related_name='histories')
-    texts = models.JSONField(default={})
-    values = models.JSONField(default={})
+    texts = models.JSONField(blank=True, null=True)
+    values = models.JSONField(blank=True, null=True)
 
     objects = models.Manager()
 

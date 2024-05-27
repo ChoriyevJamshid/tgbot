@@ -99,22 +99,20 @@ DB_POSTGRESQL = 'postgresql'
 #     "default": DB_ALL[os.environ.get("DJANGO_DB", default=DB_SQLITE)]
 # }
 
-DATABASES = {
-    "default": dj_database_url.config(conn_max_age=600) #, default='sqlite:///db.sqlite3')
-}
-
 # DATABASES = {
-#     'default': {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.environ.get('POSTGRES_NAME'),
-#         "USER": os.environ.get("POSTGRES_USER"),
-#         "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-#         "HOST": os.environ.get("POSTGRES_HOST"),
-#         "PORT": os.environ.get("POSTGRES_PORT")
-#     }
+#     "default": dj_database_url.config(conn_max_age=600) #, default='sqlite:///db.sqlite3')
 # }
 
-
+DATABASES = {
+    'default': {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": os.environ.get("POSTGRES_HOST", 'localhost'),
+        "NAME": os.environ.get('POSTGRES_NAME', 'dtb_db'),
+        "USER": os.environ.get("POSTGRES_USER", 'dtb_user'),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", 'dtb_user'),
+        "PORT": os.environ.get("POSTGRES_PORT", '5432')
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -147,6 +145,7 @@ USE_TZ = True
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL",
                                    default="redis://localhost:6379/")
+
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_backend
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_TIMEZONE = TIME_ZONE

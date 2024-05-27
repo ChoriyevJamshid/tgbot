@@ -21,7 +21,7 @@ async def command_start(message: types.Message, session, bot: Bot):
     username = message.chat.username
 
     user, created = orm.get_or_create_user(session, chat_id, first_name, username)
-    language = user.language if user.language else 'uz'
+    language = user.language
     text = texts_data[str(language)]
 
     if created:
@@ -76,11 +76,12 @@ async def choose_language(callback: types.CallbackQuery, session, bot: Bot):
 
     user.language = language
     user.save()
-
-    text = f"<b><i>{texts_data[language]['choose_language']['message']}</i></b>"
-
-    await callback.message.edit_text(text, reply_markup=get_keyboard([]))
-    await callback.answer()
+    try:
+        text = f"<b><i>{texts_data[language]['choose_language']['message']}</i></b>"
+        await callback.message.edit_text(text, reply_markup=get_keyboard([]))
+    except Exception as e:
+        await get_start_text(callback.message, user, bot)
+    return await callback.answer()
 
 
 @users_private_router.callback_query(F.data.startswith('value_'))
@@ -145,14 +146,20 @@ async def get_start_text(message, user, bot):
     text += f"<i>{get_start_text_dict['message']['line3']}</i>"
     text += f"<i>{get_start_text_dict['message']['line4']}</i>"
     text += f"<i>{get_start_text_dict['message']['line5']}</i>"
-    await bot.delete_message(user.chat_id, message.message_id)
-    return message.answer(text, reply_markup=generate_keyboard(
+    # await bot.delete_message(user.chat_id, message.message_id)
+
+    markup = generate_keyboard(
         {
             get_start_text_dict['button']['text']: "search"
         },
         sizes=(1,),
         value="other"
-    ))
+    )
+
+    try:
+        return await message.edit_text(text, reply_markup=markup)
+    except Exception as e:
+        return await message.answer(text, reply_markup=markup)
 
 
 async def return_data(message: types.Message, session, bot: Bot):
@@ -208,7 +215,3 @@ async def return_data(message: types.Message, session, bot: Bot):
         sizes=(1,),
         value="other"
     ))
-
-
-
-

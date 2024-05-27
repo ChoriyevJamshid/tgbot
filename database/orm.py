@@ -44,7 +44,16 @@ def get_product_from_db(values: list) -> list:
     return products
 
 
-data_dict = DataDict.objects.all().first()
+data_dict = DataDict.objects.filter()
+if not data_dict.exists():
+    data_dict = DataDict(
+        json_data=dict(),
+        users_data=dict(),
+        texts_data=dict()
+    )
+    data_dict.save()
+else:
+    data_dict = data_dict.first()
 
 
 def save_users_data(users_data, chat_id, user_data):
@@ -60,6 +69,7 @@ def get_or_create_user(session, chat_id, first_name='', username=''):
         if created:
             user.first_name = first_name
             user.username = username
+            user.current_values = dict()
             user.save()
         session[str(chat_id)] = {"user": user}
     user = session[str(chat_id)]['user']
@@ -71,6 +81,8 @@ def save_user_history(user, text, values):
     history, created = UserHistory.objects.get_or_create(user=user)
 
     if created:
+        history.texts = dict()
+        history.values = dict()
         history.texts['texts'] = list()
         history.values['values'] = list()
 
