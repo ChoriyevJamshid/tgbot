@@ -19,7 +19,7 @@ def task_1():
 @shared_task
 def get_parsing_data():
     logger.info("Parser is working!")
-    # run_parser()
+    run_parser()
     list_dirs = os.listdir('json_data')
     logger.info(f"Files: {list_dirs}")
     time.sleep(5)
