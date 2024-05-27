@@ -60,8 +60,8 @@ def get_parsing_data():
             title='smartphone'
         )
 
-        if 'mediapark' in file_name:
-            logger.info(file_name)
+        if 'bemarket' in file_name:
+            logger.info(f"\n\n{file_name}\n\n")
 
         for page_number, page_data in data.items():
             # logger.info(f"Page number: {page_number}")
