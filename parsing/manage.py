@@ -30,7 +30,7 @@ def run_parser():
     bemarket_parser = bemarket.parser.Parser(
         bemarket.parser.categories['smartphone']['category'],
         bemarket.parser.categories['smartphone']['subcategory'],
-        *["bemarket", 'smartphone']
+        *("bemarket", 'smartphone')
     )
 
     mediapark_parser = mediapark.parser.Parser(
@@ -154,16 +154,6 @@ def run_parser():
             texnomart_parser.exp_number += 1
             print(exc)
 
-    # while True:
-    #     try:
-    #         asyncio.run(uzum_parser.run())
-    #         break
-    #     except Exception as exc:
-    #         print(uzum_parser.__class__.__name__)
-    #         print(exc)
-    #         if uzum_parser.exp_number > 3:
-    #             break
-    #         uzum_parser.exp_number += 1
     kwargs = dict()
     for parser in parser_list:
         sync_recursion_dict_extend_dict(kwargs, parser.kwargs)

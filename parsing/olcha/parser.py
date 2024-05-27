@@ -66,8 +66,6 @@ class Parser(BaseParser):
                 continue
 
             item_list = filter_list(item_list)
-            print(item_list)
-            print('----------------------------------------')
             get_hierarchical_dict(hierarchical_dict, item_list, {})
 
             page_data[str(i)] = data
