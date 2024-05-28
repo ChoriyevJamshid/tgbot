@@ -19,7 +19,7 @@ services:
         container_name: dtb_redis
     web:
         build:
-            context: ./app
+            context: .
             dockerfile: Dockerfile
         container_name: dtb_django
         restart: always
@@ -36,7 +36,7 @@ services:
             - db
     bot:
         build:
-            context: ./app
+            context: .
             dockerfile: Dockerfile
         container_name: dtb_bot
         restart: always
@@ -48,7 +48,7 @@ services:
             - db
     celery:
         build:
-            context: ./app
+            context: .
             dockerfile: Dockerfile
         container_name: dtb_celery
         restart: always
@@ -60,7 +60,7 @@ services:
             - web
     celery-beat:
         build:
-            context: ./app
+            context: .
             dockerfile: Dockerfile
         container_name: dtb_beat
         restart: always
