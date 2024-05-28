@@ -7,13 +7,9 @@ __pycache__/
 .idea
 .env
 INFO
-old_db/db.sqlite3
 old_db/celerybeat-schedule
 old_db/database.db
 old_db/database.json
-old_db/db.sqlite3
-
-
-
+old_db/db_2.sqlite3
 
 
