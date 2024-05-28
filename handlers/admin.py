@@ -30,8 +30,7 @@ async def admin_page(message: types.Message, session, bot: Bot):
     user, created = orm.get_or_create_user(session, chat_id)
 
     if not user.is_admin:
-        print(session)
-        print(type(session))
+        session[str(chat_id)] = dict()
         return await bot.delete_message(chat_id, message.message_id)
 
     text = texts_data[user.language]["choose"]["message"]
