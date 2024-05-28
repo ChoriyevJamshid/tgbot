@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
     db:
-        image: postgres:latest
+        image: postgres:15
         container_name: dtb_postgres
         restart: always
         volumes:
@@ -19,15 +19,13 @@ services:
         container_name: dtb_redis
     web:
         build:
-            context: .
+            context: ./app
             dockerfile: Dockerfile
         container_name: dtb_django
         restart: always
-        command: bash -c "python manage.py migrate --settings=djconfig.settings.prod && gunicorn djconfig.wsgi:application -w 4 -b 0.0.0.0:8005"
-        volumes:
-            - .:/code
+        command: gunicorn djconfig.wsgi:application -w 4 -b 0.0.0.0:8000
         ports:
-            - "8005:8005"
+            - "8000:8005"
         expose:
             - "8005"
         env_file:
@@ -38,7 +36,7 @@ services:
             - db
     bot:
         build:
-            context: .
+            context: ./app
             dockerfile: Dockerfile
         container_name: dtb_bot
         restart: always
@@ -47,15 +45,14 @@ services:
             - ./.env
         depends_on:
             - web
+            - db
     celery:
         build:
-            context: .
+            context: ./app
             dockerfile: Dockerfile
         container_name: dtb_celery
         restart: always
-        command: celery -A djconfig worker --loglevel=INFO
-        volumes:
-            - .:/code
+        command: celery -A djconfig worker --concurrency=2 --loglevel=INFO
         env_file:
             - ./.env
         depends_on:
@@ -63,13 +60,11 @@ services:
             - web
     celery-beat:
         build:
-            context: .
+            context: ./app
             dockerfile: Dockerfile
         container_name: dtb_beat
         restart: always
         command: celery -A djconfig.celery_app beat -l info
-        volumes:
-            - .:/code
         env_file:
             - ./.env
         depends_on:

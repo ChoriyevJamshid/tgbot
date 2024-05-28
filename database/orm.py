@@ -77,6 +77,7 @@ def get_or_create_user(session, chat_id, first_name='', username=''):
     return user, created
 
 
+
 def save_user_history(user, text, values):
     history, created = UserHistory.objects.get_or_create(user=user)
 
