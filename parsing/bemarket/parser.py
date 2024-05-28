@@ -1,5 +1,5 @@
 # from parsing.base.parser import *
-from ..base.parser import *
+from parsing.base.parser import *
 
 debug = False
 
