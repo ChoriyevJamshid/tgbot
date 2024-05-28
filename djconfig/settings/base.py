@@ -99,20 +99,20 @@ DB_POSTGRESQL = 'postgresql'
 #     "default": DB_ALL[os.environ.get("DJANGO_DB", default=DB_SQLITE)]
 # }
 
-# DATABASES = {
-#     "default": dj_database_url.config(conn_max_age=600) #, default='sqlite:///db_2.sqlite3')
-# }
-
 DATABASES = {
-    'default': {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.environ.get("POSTGRES_HOST", 'localhost'),
-        "NAME": os.environ.get('POSTGRES_NAME', 'test_db'),
-        "USER": os.environ.get("POSTGRES_USER", 'test_user'),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", 'test_user'),
-        "PORT": os.environ.get("POSTGRES_PORT", '5432')
-    }
+    "default": dj_database_url.config(conn_max_age=600) #, default='sqlite:///db_2.sqlite3')
 }
+
+# DATABASES = {
+#     'default': {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "HOST": os.environ.get("POSTGRES_HOST", 'localhost'),
+#         "NAME": os.environ.get('POSTGRES_NAME', 'test_db'),
+#         "USER": os.environ.get("POSTGRES_USER", 'test_user'),
+#         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", 'test_user'),
+#         "PORT": os.environ.get("POSTGRES_PORT", '5432')
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
