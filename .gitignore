@@ -2,15 +2,15 @@ venv
 json_data
 parsing/json_data
 old_db/db_1.sqlite3
-database.db
+old_db/database.db
 __pycache__/
 .idea
 .env
 INFO
-./db.sqlite3
-celerybeat-schedule
-database.db
-database.json
+old_db/db.sqlite3
+old_db/celerybeat-schedule
+old_db/database.db
+old_db/database.json
 
 
 
