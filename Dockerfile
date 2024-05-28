@@ -50,7 +50,7 @@ RUN pip install --no-cache /wheels/*
 
 # copy entrypoint.prod.sh
 COPY ./entrypoint.prod.sh .
-RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
+RUN sed -i 's/\r$//g'  /home/app/web/entrypoint.prod.sh
 RUN chmod +x /home/app/web/entrypoint.prod.sh
 
 # copy project
